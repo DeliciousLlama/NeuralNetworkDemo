@@ -28,7 +28,7 @@ state_bubble = 0
 def main():
     input, answer = load_data("TrainingData.csv")
     model = build_model()
-    model.fit(input, answer, epochs=150, batch_size=10)
+    model.fit(input, answer, epochs=450, batch_size=10)
 
     _, accuracy = model.evaluate(input, answer)
     print('Accuracy: %.2f' % (accuracy*100))
