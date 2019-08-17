@@ -7,6 +7,7 @@ from keras.models import Model, Sequential
 from keras.layers.core import Dense, Dropout
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
+from keras_tqdm import TQDMCallback
 from keras.optimizers import Adam
 from keras import initializers
 from tqdm import tqdm
@@ -26,12 +27,14 @@ state_bubble = 0
 
 
 def main():
-    input, answer = load_data("TrainingData.csv")
+    bg, answer = load_data("TrainingData.csv")
     model = build_model()
-    model.fit(input, answer, epochs=130, batch_size=10)
-
-    _, accuracy = model.evaluate(input, answer)
+    # model.fit(bg, answer, epochs=130, batch_size=10)
+    model_history = model.fit(bg, answer, epochs=200, batch_size=10, validation_split=0.5, verbose=0, callbacks=[TQDMCallback()]).history
+    _, accuracy = model.evaluate(bg, answer)
     print('Accuracy: %.2f' % (accuracy*100))
+    print('Training history: ')
+    print(model_history)
 
     Button(root, text="Quit", command=root.quit).pack()
     root.after(0, place_circle)
