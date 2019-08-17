@@ -31,8 +31,6 @@ def main():
     root.after(0, place_circle)
     root.mainloop()
 
-    # data = numpy.genfromtxt('TrainingData.csv', delimiter=',')
-
 
 def displayThings(rgb, answer):
     global circleX
