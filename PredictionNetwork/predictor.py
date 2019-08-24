@@ -23,22 +23,48 @@ tW = canvas.create_text(300, 250, text="Hello123", justify='center', fill='white
 tB = canvas.create_text(200, 250, text="Hello123", justify='center', fill='black')
 circleX = 250
 circle = canvas.create_oval(circleX-5, 230-5, circleX+5, 230+5, fill='white', width=1)
-state_bubble = 0
+# state_bubble = 0
+array_counter = 0
+out = 0
+inp = 0
 
 
 def main():
+    global out, inp
+
     bg, answer = load_data("TrainingData.csv")
+    bg_train, bg_test = break_data(bg)
+    ans_train, ans_test = break_data(answer)
     model = build_model()
-    # model.fit(bg, answer, epochs=130, batch_size=10)
-    model_history = model.fit(bg, answer, epochs=200, batch_size=10, validation_split=0.5, verbose=0, callbacks=[TQDMCallback()]).history
-    _, accuracy = model.evaluate(bg, answer)
+    model.fit(bg_train, ans_train, epochs=130, batch_size=10)
+    # model.fit(bg, answer, epochs=130, batch_size=10, callbacks=[TQDMCallback()])
+    _, accuracy = model.evaluate(bg_test, ans_test)
     print('Accuracy: %.2f' % (accuracy*100))
-    print('Training history: ')
-    print(model_history)
+
+    inp = build_prediction_arr()
+    out = model.predict(inp)
+    # print(numpy.round(out))
+    out = numpy.round(out)
 
     Button(root, text="Quit", command=root.quit).pack()
     root.after(0, place_circle)
     root.mainloop()
+
+
+def build_prediction_arr():
+    pred_arr = numpy.zeros(shape=(20,3))
+    for i in range(20):
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        pred_arr[i] = [r, g, b]
+    return pred_arr
+
+
+def break_data(data):
+    train = data[:750]
+    test = data[750:]
+    return train, test
 
 
 def display_answer(rgb, answer):
@@ -54,9 +80,10 @@ def display_answer(rgb, answer):
 
 
 def place_circle():
-    global state_bubble
-    display_answer((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), state_bubble)
-    state_bubble = 0 if state_bubble == 1 else 1
+    global array_counter, out, inp
+    display_answer((int(inp[array_counter, 0]), int(inp[array_counter, 1]), int(inp[array_counter, 2])), int(out[array_counter, 0]))
+    array_counter = random.randint(0, 19)
+    # print(int(out[array_counter, 0]))
     root.after(1000, place_circle)
 
 
