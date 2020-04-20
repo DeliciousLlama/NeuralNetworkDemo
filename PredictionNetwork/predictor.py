@@ -36,7 +36,7 @@ def main():
     bg_train, bg_test = break_data(bg)
     ans_train, ans_test = break_data(answer)
     model = build_model()
-    model.fit(bg_train, ans_train, epochs=130, batch_size=10)
+    model.fit(bg_train, ans_train, epochs=200, batch_size=10, callbacks=[TQDMCallback()])
     # model.fit(bg, answer, epochs=130, batch_size=10, callbacks=[TQDMCallback()])
     _, accuracy = model.evaluate(bg_test, ans_test)
     print('Accuracy: %.2f' % (accuracy*100))
@@ -52,8 +52,8 @@ def main():
 
 
 def build_prediction_arr():
-    pred_arr = numpy.zeros(shape=(20,3))
-    for i in range(20):
+    pred_arr = numpy.zeros(shape=(50,3))
+    for i in range(50):
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
